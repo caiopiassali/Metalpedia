@@ -1,0 +1,72 @@
+<?php
+use core\Application;
+?>
+
+<div class="col-sm-10 offset-sm-1">
+
+    <!--<h5>Bem vindo !!!</h5>
+    <hr>-->
+
+    <h6 class="mt-5">Últimos Álbuns:</h6>
+
+    <div id="view-list" class="card-group">
+
+        <?php if (sizeof($this->albums) == 0) { ?>
+            <div class="container-fluid mt-3 mb-5 text-center">
+                <span>Nenhum Registro Encontrado!</span>
+            </div>
+        <?php } ?>
+
+        <?php foreach ($this->albums as $album) { ?>
+
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 mb-5">
+
+                <div class="grid__item">
+                    <a class="grid__link" href="/Metalpedia/albums/<?=$album->getId()?>" title="<?=$album->getNameAlbum()?>">
+                        <div class="img-wrap img-wrap--grid">
+                            <svg class="lp lp--grid"></svg>
+                            <img class="img img--grid" src="core/img/covers/<?=$album->getCoverAlbum()?>" alt="album1">
+                        </div>
+                    </a>
+                    <span class="type"><?=$album->getAlbumType()?></span>
+                    <span class="year"><?=\core\util\Strings::getYear($album->getReleaseDate())?></span>
+                    <span class="artist"><a href="/Metalpedia/bandas/<?=$album->getBand()->getId()?>"><?=$album->getBand()->getNameBand()?></a></span>
+                    <span class="title"><?=$album->getNameAlbum()?></span>
+                </div>
+
+            </div>
+
+        <?php } ?>
+    </div>
+
+    <h6>Últimas Bandas:</h6>
+
+    <div id="view-list" class="card-group">
+
+        <?php if (sizeof($this->bands) == 0) { ?>
+            <div class="container-fluid mt-3 mb-5 text-center">
+                <span>Nenhum Registro Encontrado!</span>
+            </div>
+        <?php } ?>
+
+        <?php foreach ($this->bands as $band) { ?>
+
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 mb-5">
+
+                <div class="grid__item mb-4">
+                    <a class="grid__link" href="/Metalpedia/bandas/<?=$band->getId()?>" title="<?=$band->getNameBand()?>">
+                        <div class="img-wrap img-wrap--grid">
+                            <img class="img img--grid" src="/Metalpedia/core/img/photos/<?=$band->getPhotoBand()?>" alt="album1">
+                        </div>
+                    </a>
+                    <span class="year"><?=$band->getGenre()->getNameGenre()?></span>
+                    <span class="artist"><?=$band->getCountry()->getNameCountry()?></span>
+                    <span class="title"><?=$band->getNameBand()?></span>
+                </div>
+
+            </div>
+
+        <?php } ?>
+    </div>
+
+</div>

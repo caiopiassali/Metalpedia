@@ -1,0 +1,70 @@
+<div class="col-sm-6 offset-sm-3">
+
+    <?php if (!is_null($this->model->getId())) { ?>
+        <h4>Editar/Excluir País:</h4>
+    <?php } else { ?>
+        <h4>Cadastrar País:</h4>
+    <?php } ?>
+
+    <form method="post" action="/Metalpedia/Request.php?class=CountryCtr&method=run">
+
+        <input type="hidden" name="id_country" value="<?= $this->model->getId() ?>">
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">* País:</div>
+                </div>
+                <input type="text" class="form-control form-control-lg" name="name_country" id="name_country" value="<?= $this->model->getNameCountry() ?>"
+                       placeholder="..." data-validation="required" data-validation-error-msg="* Nome Obrigatório!">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">* ISO:</div>
+                </div>
+                <input type="text" class="form-control form-control-lg" name="iso_country" id="iso_country" value="<?= $this->model->getIsoCountry() ?>"
+                       placeholder="..." data-validation="length" data-validation-length="2-2" data-validation-error-msg="* Formato(AA) Obrigatório!">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">* ISO3:</div>
+                </div>
+                <input type="text" class="form-control form-control-lg" name="iso3_country" id="iso3_country" value="<?= $this->model->getIso3Country() ?>"
+                       placeholder="..." data-validation="length" data-validation-length="3-3" data-validation-error-msg="* Formato(AAA) Obrigatório!">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">* Bandeira:</div>
+                </div>
+                <input type="text" class="form-control form-control-lg" name="flag_country" id="flag_country" value="<?= $this->model->getFlagCountry() ?>"
+                       placeholder="..." data-validation="required" data-validation-error-msg="* Nome do Arquivo + Extensão Obrigatório!">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <div class="row">
+                <div class="col-6">
+                    <input type="submit" class="btn btn-block btn-outline-danger btn-lg" name="command" value="Salvar">
+                </div>
+                <div class="col-6">
+                    <?php if (!is_null($this->model->getId())) { ?>
+                        <input type="submit" class="btn btn-block btn-outline-danger" value="Excluir">
+                    <?php } else { ?>
+                        <input type="reset" class="btn btn-block btn-outline-danger" value="Limpar">
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+</div>

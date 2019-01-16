@@ -1,0 +1,123 @@
+<div class="col-sm-6 offset-sm-3">
+
+    <h4>Cadastrar:</h4>
+
+    <form method="post" action="/Metalpedia/Request.php?class=UserCtr&method=insertUpdate">
+
+        <input type="hidden" name="id" value="<?= $this->model->getId() ?>">
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">* Nome:</div>
+                </div>
+                <input type="text" class="form-control form-control-lg" name="name_user" id="name_user" value="<?= $this->model->getNameUser() ?>"
+                       placeholder="..." data-validation="required" data-validation-error-msg="* Nome Obrigatório!">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">* Sexo:</div>
+                </div>
+                <select class="selectpicker" name="gender_user" id="gender_user"
+                        title="..." data-validation="required" data-validation-error-msg="* Sexo Obrigatório!">
+                    <option value="M">
+                        Masculino
+                    </option>
+                    <option value="F">
+                        Feminino
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">Avatar:</div>
+                </div>
+                <input type="text" class="form-control form-control-lg" name="avatar_user" id="avatar_user"
+                       value="<?= $this->model->getAvatarUser() ?>" placeholder="...">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">* Email:</div>
+                </div>
+                <input type="text" class="form-control form-control-lg" name="email_user" id="email_user" value="<?= $this->model->getEmailUser() ?>"
+                       placeholder="..." data-validation="required email" data-validation-error-msg-required="* Email Obrigatório!"
+                       data-validation-error-msg-email="* Email Inválido!">
+                <button id="email-exists-error" style="cursor: default" type="button" class="btn btn-info btn-sm" title="Email Não Validado!">
+                    <i class="fas fa-spinner fa-sm"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">* Senha:</div>
+                </div>
+                <input type="password" class="form-control form-control-lg" name="password_user" id="password_user" value="<?= $this->model->getPasswordUser() ?>"
+                       placeholder="..." data-validation="length" data-validation-length="min6" data-validation-error-msg="* Senha Deve Ter No Mínimo 6 Caracteres!">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-6">
+                    <input type="submit" class="btn btn-block btn-outline-danger btn-lg" name="command" value="Cadastrar">
+                </div>
+                <div class="col-6">
+                    <input type="reset" class="btn btn-block btn-outline-danger" value="Limpar">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group m-5">
+            <small class="form-text text-muted text-center">
+                Já possui cadastro? <a href="/Metalpedia/entrar">Entre aqui!</a>
+            </small>
+        </div>
+
+    </form>
+
+</div>
+
+<!-- JS -->
+<script src="/Metalpedia/core/vendor/js/jquery-3.3.1.min.js"></script>
+<script !src="">
+    $("#email_user").on('blur', function () {
+        if($("#email_user").val() != ''){
+            url = "http://localhost/Metalpedia/Request.php?class=UserCtr&method=emailExists&email_user=" + $("#email_user").val();
+            $.getJSON(url,function (data) {
+                    console.log(data);
+                    if(data == false) {
+                        $("#email-exists-error").attr('title', 'Email Válido!');
+                        $("#email-exists-error").removeClass("btn-info");
+                        $("#email-exists-error").removeClass("btn-danger");
+                        $("#email-exists-error").addClass("btn-success");
+                        $("#email-exists-error").html("<i class=\"fas fa-check fa-sm\"></i>");
+                    } else {
+                        $("#email-exists-error").attr('title', 'Email já Cadastrado!');
+                        $("#email-exists-error").removeClass("btn-success");
+                        $("#email-exists-error").removeClass("btn-info");
+                        $("#email-exists-error").addClass("btn-danger");
+                        $("#email-exists-error").html("<i class=\"fas fa-times fa-sm\"></i>");
+                        $("#email_user").focus();
+                    }
+                }
+            );
+        } else {
+            $("#email-exists-error").attr('title', 'Email Não Validado!');
+            $("#email-exists-error").removeClass("btn-success");
+            $("#email-exists-error").removeClass("btn-danger");
+            $("#email-exists-error").addClass("btn-info");
+            $("#email-exists-error").html("<i class=\"fas fa-spinner fa-sm\"></i>");
+        }
+    });
+</script>

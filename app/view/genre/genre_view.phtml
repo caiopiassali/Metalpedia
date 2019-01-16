@@ -1,0 +1,40 @@
+<div class="col-sm-6 offset-sm-3">
+
+    <?php if (!is_null($this->model->getId())) { ?>
+        <h4>Editar/Excluir Gênero:</h4>
+    <?php } else { ?>
+        <h4>Cadastrar Gênero:</h4>
+    <?php } ?>
+
+    <form method="post" action="/Metalpedia/Request.php?class=GenreCtr&method=run">
+
+        <input type="hidden" name="id_genre" value="<?= $this->model->getId() ?>">
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">* Gênero:</div>
+                </div>
+                <input type="text" class="form-control form-control-lg" name="name_genre" id="name_genre" value="<?= $this->model->getNameGenre() ?>"
+                       placeholder="..." data-validation="required" data-validation-error-msg="* Gênero Obrigatório!">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-6">
+                    <input type="submit" class="btn btn-block btn-outline-danger btn-lg" name="command" value="Salvar">
+                </div>
+                <div class="col-6">
+                    <?php if (!is_null($this->model->getId())) { ?>
+                        <input type="submit" class="btn btn-block btn-outline-danger" name="command" value="Excluir">
+                    <?php } else { ?>
+                        <input type="reset" class="btn btn-block btn-outline-danger" value="Limpar">
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+</div>

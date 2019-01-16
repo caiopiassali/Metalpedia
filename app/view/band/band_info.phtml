@@ -1,0 +1,131 @@
+<div class="col-sm-10 offset-sm-1 mb-4">
+
+    <div class="row">
+        <div class="col-sm-10">
+            <h4><?=$this->model->getNameBand()?>:</h4>
+        </div>
+        <div class="col-sm-2 text-right">
+            <?php if ($this->activeUser != new \app\model\UserModel() /*&& $this->activeUser->getTypeUser() != "U"*/) { ?>
+                <a href="/Metalpedia/bandas/editar/<?=$this->model->getId()?>">
+                    <button type="button" class="btn btn-danger btn-sm">
+                        <i class="fas fa-cog"></i> Editar
+                    </button>
+                </a>
+            <?php } ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-7">
+            <h6>Bio:</h6>
+            <p>
+                <?=$this->model->getBioBand()?>
+            </p>
+            <p>
+
+            </p>
+        </div>
+        <div class="col-sm-5">
+            <h6>&nbsp;</h6>
+            <img class="img-fluid mb-3" src="/Metalpedia/core/img/logos/<?=$this->model->getLogoBand()?>" alt="">
+            <img class="img-fluid" src="/Metalpedia/core/img/photos/<?=$this->model->getPhotoBand()?>" alt="">
+            <p>
+                <h6 class="mb-0">Info:</h6>
+            </p>
+            <div class="row">
+                <div class="col-sm-6 text-left">
+                    <strong>País:</strong>
+                </div>
+                <div class="col-sm-6 text-right">
+                    <strong>Gênero:</strong>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 text-left">
+                    <span class="flag <?=strtolower($this->model->getCountry()->getIsoCountry())?>"></span><?=$this->model->getCountry()->getNameCountry()?>
+                </div>
+                <div class="col-sm-6 text-right">
+                    <?=$this->model->getGenre()->getNameGenre()?>
+                </div>
+            </div>
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <h6>Álbums:</h6>
+        </div>
+    </div>
+
+    <div class="row d-flex justify-content-around mb-5">
+        <div class="col-sm-12 d-flex justify-content-around">
+            <button class="btn page-link active filter" type="button" data-filter="*">Todos</button>
+            <?php
+            if ($this->album_types) {
+                foreach ($this->album_types as $type) { ?>
+                    <button class="btn page-link filter" type="button" data-filter=".<?=str_replace(' ', '-', strtolower($type))?>"><?=$type?></button>
+                <?php }
+            } ?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div id="isotope-empty" class="d-none col-sm-12">
+            <p>Nenhum Álbum Cadastrado!</p>
+        </div>
+    </div>
+
+    <div class="row grid">
+
+        <?php if (sizeof($this->albums) == 0) { ?>
+            <div class="col-sm-12">
+                <p>Nenhum Álbum Cadastrado!</p>
+            </div>
+        <?php } ?>
+
+        <?php if ($this->albums) foreach ($this->albums as $album) { ?>
+
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 <?=str_replace(' ', '-', strtolower($album->getAlbumType()))?>">
+
+                <div class="grid__item">
+                    <a class="grid__link" href="/Metalpedia/albums/<?=$album->getId()?>" title="<?=$album->getNameAlbum()?>">
+                        <div class="img-wrap img-wrap--grid">
+                            <svg class="lp lp--grid"></svg>
+                            <img class="img img--grid" src="/Metalpedia/core/img/covers/<?=$album->getCoverAlbum()?>" alt="album1">
+                        </div>
+                    </a>
+                    <span class="type"><?=$album->getAlbumType()?></span>
+                    <span class="year"><?=\core\util\Strings::getYear($album->getReleaseDate())?></span>
+                    <span class="artist"><?=$album->getBand()->getNameBand()?></span>
+                    <span class="title"><?=$album->getNameAlbum()?></span>
+                </div>
+
+            </div>
+
+        <?php }?>
+
+    </div>
+
+</div>
+
+<!-- JS -->
+<script src="/Metalpedia/core/vendor/js/jquery-3.3.1.min.js"></script>
+<script src="/Metalpedia/core/vendor/js/isotope.pkgd.min.js"></script>
+<script !src="">
+    // init Isotope
+    var $grid = $('div.row.grid').isotope({
+        // options
+    });
+    // filter items on button click
+    $('button.filter').on( 'click', function() {
+        $("#isotope-empty").addClass("d-none");
+        $("button.filter").removeClass("active");
+        $(this).addClass("active");
+        var filterValue = $(this).attr('data-filter');
+        $grid.isotope({ filter: filterValue });
+        if (!$grid.data('isotope').filteredItems.length) {
+            $("#isotope-empty").removeClass("d-none");
+        }
+    });
+</script>

@@ -1,0 +1,36 @@
+RewriteEngine On
+RewriteRule %{REQUEST_FILENAME} !-f
+RewriteRule %{REQUEST_FILENAME} !-d
+
+## Countries ##
+RewriteRule ^paises/cadastrar\/?$ Request.php?class=CountryCtr&method=showView [QSA,L,NC]
+RewriteRule ^paises/editar/([0-9]+)$ Request.php?class=CountryCtr&method=showView&id=$1 [QSA,L,NC]
+RewriteRule ^paises/([0-9]+)$ Request.php?class=CountryCtr&method=showView&id=$1 [QSA,L,NC]
+RewriteRule ^paises\/?$ Request.php?class=CountryCtr&method=showList [QSA,L,NC]
+RewriteRule ^paises?page=([0-9]+)$ Request.php?class=CountryCtr&method=showList&page=$1 [QSA,L,NC]
+
+## Genres ##
+RewriteRule ^generos/cadastrar\/?$ Request.php?class=GenreCtr&method=showView [QSA,L,NC]
+RewriteRule ^generos/editar/([0-9]+)$ Request.php?class=GenreCtr&method=showView&id=$1 [QSA,L,NC]
+RewriteRule ^generos/([0-9]+)$ Request.php?class=GenreCtr&method=showView&id=$1 [QSA,L,NC]
+RewriteRule ^generos\/?$ Request.php?class=GenreCtr&method=showList [QSA,L,NC]
+RewriteRule ^generos?page=([0-9]+)$ Request.php?class=GenreCtr&method=showList&page=$1 [QSA,L,NC]
+
+## Band ##
+RewriteRule ^bandas/cadastrar\/?$ Request.php?class=BandCtr&method=showView [QSA,L,NC]
+RewriteRule ^bandas/editar/([0-9]+)$ Request.php?class=BandCtr&method=showView&id=$1 [QSA,L,NC]
+RewriteRule ^bandas/([0-9]+)$ Request.php?class=BandCtr&method=showInfo&id=$1 [QSA,L,NC]
+RewriteRule ^bandas\/?$ Request.php?class=BandCtr&method=showList [QSA,L,NC]
+RewriteRule ^bandas?page=([0-9]+)$ Request.php?class=BandCtr&method=showList&page=$1 [QSA,L,NC]
+
+## Album ##
+RewriteRule ^albums/cadastrar\/?$ Request.php?class=AlbumCtr&method=showView [QSA,L,NC]
+RewriteRule ^albums/editar/([0-9]+)$ Request.php?class=AlbumCtr&method=showView&id=$1 [QSA,L,NC]
+RewriteRule ^albums/([0-9]+)$ Request.php?class=AlbumCtr&method=showInfo&id=$1 [QSA,L,NC]
+RewriteRule ^albums\/?$ Request.php?class=AlbumCtr&method=showList [QSA,L,NC]
+RewriteRule ^albums?page=([0-9]+)$ Request.php?class=AlbumCtr&method=showList&page=$1 [QSA,L,NC]
+
+## User ##
+RewriteRule ^cadastrar\/?$ Request.php?class=UserCtr&method=showView [QSA,L,NC]
+RewriteRule ^entrar\/?$ Request.php?class=UserCtr&method=showList [QSA,L,NC]
+RewriteRule ^sair\/?$ Request.php?class=UserCtr&method=doLogout [QSA,L,NC]

@@ -1,0 +1,58 @@
+<div class="col-sm-6 offset-sm-3">
+
+    <h4>Entrar:</h4>
+
+    <form method="post" action="/Metalpedia/Request.php?class=UserCtr&method=doLogin">
+
+        <?php if (isset($this->msgError)) { ?>
+            <div class="form-group">
+                <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+                    <?= $this->msgError; ?>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        <?php } ?>
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">* Email:</div>
+                </div>
+                <input type="text" class="form-control form-control-lg" name="email_user" id="email_user"
+                       placeholder="..." data-validation="required email" data-validation-error-msg-required="* Email Obrigatório!"
+                       data-validation-error-msg-email="* Email Inválido!">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">* Senha:</div>
+                </div>
+                <input type="password" class="form-control form-control-lg" name="password_user" id="password_user"
+                       placeholder="..." data-validation="length" data-validation-length="min6" data-validation-error-msg="* Senha Deve Ter No Mínimo 6 Caracteres!">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-6">
+                    <input type="submit" class="btn btn-block btn-outline-danger btn-lg" value="Entrar">
+                </div>
+                <div class="col-6">
+                    <input type="reset" class="btn btn-block btn-outline-danger" value="Limpar">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group m-5">
+            <small class="form-text text-muted text-center">
+                Não possuo cadastro? <a href="/Metalpedia/cadastrar">Cadastre aqui!</a>
+            </small>
+        </div>
+
+    </form>
+
+</div>

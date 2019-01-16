@@ -1,0 +1,317 @@
+<div class="col-sm-6 offset-sm-3">
+
+    <?php if (!is_null($this->model->getId())) { ?>
+        <h4>Editar/Excluir Álbum:</h4>
+    <?php } else { ?>
+        <h4>Cadastrar Álbum:</h4>
+    <?php } ?>
+
+    <form method="post" action="/Metalpedia/Request.php?class=AlbumCtr&method=run" enctype="multipart/form-data">
+
+        <input type="hidden" name="id" value="<?= $this->model->getId() ?>">
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">* Álbum:</div>
+                </div>
+                <input type="text" class="form-control form-control-lg" name="name_album" id="name_album" value="<?= $this->model->getNameAlbum() ?>"
+                       placeholder="..." data-validation="required" data-validation-error-msg="* Nome do Álbum Obrigatório!">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">* Lançamento:</div>
+                </div>
+                <input type="date" class="form-control form-control-lg" name="release_date" id="release_date" value="<?= $this->model->getReleaseDate() ?>"
+                       placeholder="dd/mm/yyyy" data-validation="required birthdate"
+                       data-validation-format="yyyy-mm-dd"
+                       data-validation-error-msg-required="* Data de Lançamento Obrigatório!"
+                       data-validation-error-msg-birthdate="* A Data ser no formato dd/mm/yyyy!">
+            </div>
+        </div>
+
+        <?php if (is_null($this->model->getId())) { ?>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">* Cover:</div>
+                    </div>
+                    <label class="input-file" for="cover_album">Selecionar Imagem</label>
+                    <input type="file" name="cover_album" id="cover_album" accept="image/*"
+                           data-validation="required mime size dimension"
+                           data-validation-allowing="jpg, png, jpeg"
+                           data-validation-max-size="250kb"
+                           data-validation-dimension="300-700"
+                           data-validation-error-msg-required="* Cover Obrigatório!"
+                           data-validation-error-msg-mime="* Apenas imagens são permitidas!"
+                           data-validation-error-msg-size="* O Cover deve ter no máximo 250kb!"
+                           data-validation-error-msg-dimension="* O Cover deve ter no mínimo 100x100 e no máximo 700x700!"
+                    >
+                </div>
+            </div>
+        <?php } ?>
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">* Tipo:</div>
+                </div>
+                <select class="selectpicker" name="album_type" id="album_type"
+                        data-live-search="true" title="..." data-validation="required" data-validation-error-msg="* Tipo Obrigatório!">
+                    <?php
+                    if ($this->album_types) {
+                        foreach ($this->album_types as $type) {
+                            ?>
+                            <option value="<?= $type ?>"
+                                <?= $type == $this->model->getAlbumType() ? "selected" : '' ?>>
+                                <?= $type ?>
+                            </option>
+                            <?php
+                        }
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">* Banda:</div>
+                </div>
+                <select class="selectpicker" name="id_band" id="id_band"
+                        data-live-search="true" title="..." data-validation="required" data-validation-error-msg="* Banda Obrigatória!">
+                    <?php
+                    if ($this->bands) {
+                        foreach ($this->bands as $band) {
+                            ?>
+                            <option value="<?= $band->getId() ?>"
+                                <?= $band->getId() == $this->model->getBand()->getId() ? "selected" : '' ?>>
+                                <?= $band->getNameBand() ?>
+                            </option>
+                            <?php
+                        }
+                    }
+                    ?>
+                </select>
+                <button type="button" class="btn btn-danger btn-sm" name="search_band" id="search_band">
+                    <i class="fas fa-search fa-sm"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <h6>Músicas:</h6>
+            </div>
+        </div>
+
+        <fieldset id="songs-list" class="card bg-transparent">
+
+            <?php if ($this->songs) foreach ($this->songs as $i=>$song) { ?>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <input type="hidden" name="data[<?=$i?>][0]" value="<?=$song->getId()?>">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">* Música:</div>
+                                </div>
+                                <input type="text" class="form-control form-control-lg" name="data[<?=$i?>][1]" id="name_song" value="<?=$song->getNameSong()?>"
+                                       placeholder="..." data-validation="required" data-validation-error-msg="* Nome da Música Obrigatória!">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">* Duração:</div>
+                                </div>
+                                <input type="time" class="form-control form-control-lg" name="data[<?=$i?>][2]" id="length_song" value="<?=$song->getLengthSong()?>"
+                                       placeholder="..." data-validation="required" min="00:00:00" step="1"
+                                       data-validation-error-msg-required="* Duração da Música Obrigatória!">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                                <textarea class="form-control form-control-lg" name="data[<?=$i?>][3]" id="lyrics_song" rows="10"
+                                          placeholder="Letra..."><?=\core\util\Strings::formatOutput($song->getLyricsSong())?></textarea>
+                        </div>
+                    </div>
+                </div>
+
+            <?php } ?>
+
+            <?php if (!isset($this->songs) || sizeof($this->songs) == 0) { ?>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <input type="hidden" name="data[0][0]">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">* Música:</div>
+                                </div>
+                                <input type="text" class="form-control form-control-lg" name="data[0][1]" id="name_song"
+                                       placeholder="..." data-validation="required" data-validation-error-msg="* Nome da Música Obrigatória!">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">* Duração:</div>
+                                </div>
+                                <input type="time" class="form-control form-control-lg" name="data[0][2]" id="length_song"
+                                       placeholder="..." data-validation="required" min="00:00:00" step="1"
+                                       data-validation-error-msg-required="* Duração da Música Obrigatória!">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                                    <textarea class="form-control form-control-lg" name="data[0][3]" id="lyrics_song" rows="10"
+                                              placeholder="Letra..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+            <?php } ?>
+
+        </fieldset>
+
+        <div class="row mb-4 mt-0">
+            <div class="col-sm-3 offset-sm-9">
+                <button type="button" class="btn btn-sm btn-danger btn-block" name="add-fields" title="Inserir Novos Campos">
+                    <i class="fas fa-plus fa-xs"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-6">
+                    <input type="submit" class="btn btn-block btn-outline-danger btn-lg" name="submit" value="Salvar">
+                </div>
+                <div class="col-6">
+                    <?php if (!is_null($this->model->getId())) { ?>
+                        <input type="submit" class="btn btn-block btn-outline-danger" name="submit" value="Excluir">
+                    <?php } else { ?>
+                        <input type="reset" class="btn btn-block btn-outline-danger" value="Limpar">
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+</div>
+
+<!-- Band Modal -->
+<div class="modal fade" id="bandModal" tabindex="-1" role="dialog" aria-labelledby="bandModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark">Bandas</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="text-white">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-0 m-0">
+                <div class="form-group mb-0">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="name_band" id="name_band" value="" placeholder="Pesquisar...">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-danger btn-xs" name="btn-search-band" id="btn-search-band" title="Pesquisar">
+                                <i class="fas fa-search fa-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <table id="bands-table" class="table table-striped table-borderless">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Banda</th>
+                        <th>País</th>
+                        <th>Gênero</th>
+                        <th class="text-right">#</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JQuery JS -->
+<script src="/Metalpedia/core/vendor/js/jquery-3.3.1.min.js"></script>
+<script !src="">
+    $("#search_band").on('click', function () {
+        $("#bandModal").modal('toggle');
+        $("#btn-search-band").trigger( "click" );
+    });
+
+    $("#btn-search-band").on('click', function () {
+        $("#bands-table tbody").html("");
+        //if($("#name_country").val() != ''){
+        url = "http://localhost/Metalpedia/Request.php?class=BandCtr&method=getBands&name_band=" + $("#name_band").val();
+        $.getJSON(url, function (data) {
+                if(!data.status){
+                    $.each(data, function (key, value) {
+                        $("#bands-table tbody").append("<tr>\n" +
+                            "                        <td class=\"align-middle\">"+value.name_band+"</td>\n" +
+                            "                        <td class=\"align-middle\">"+value.country.name_country+"</td>\n" +
+                            "                        <td class=\"align-middle\">"+value.genre.name_genre+"</td>\n" +
+                            "                        <td class=\"text-right\">\n" +
+                            "                            <button type=\"button\" class=\"btn btn-danger btn-sm btn-select-band\" name=\""+value.name_band+"\" id=\""+value.id_band+"\"><i class=\"fas fa-check fa-xs\"></i></button>\n" +
+                            "                        </td>\n" +
+                            "                    </tr>");
+                    });
+                } else {
+                    $("#bands-table tbody").append("<tr><td colspan=\"4\" class=\"align-middle text-center\">Nenhum Registro Encontrado</tr>");
+                }
+            }
+        );
+        //}
+    });
+
+    $(document).on('click', 'button.btn.btn-danger.btn-sm.btn-select-band', function(){
+        bandId = $(this).attr('id');
+        $('#id_band.selectpicker').val(bandId);
+        $('.selectpicker').selectpicker('refresh');
+        $("#bandModal").modal('toggle');
+    });
+
+    $("button[name=add-fields]").on('click', function () {
+        var length = $("#songs-list div.row").length;
+        $("#songs-list").append("<div class=\"row\">\n" +
+            "                <div class=\"col-sm-12\">\n" +
+            "                  <input type=\"hidden\" name=\"data["+length+"][0]\">\n" +
+            "                    <div class=\"form-group\">\n" +
+            "                        <div class=\"input-group\">\n" +
+            "                            <div class=\"input-group-prepend\">\n" +
+            "                                <div class=\"input-group-text\">* Música:</div>\n" +
+            "                            </div>\n" +
+            "                            <input type=\"text\" class=\"form-control form-control-lg\" name=\"data["+length+"][1]\" id=\"name_song\"\n" +
+            "                                   placeholder=\"...\" data-validation=\"required\" data-validation-error-msg=\"* Nome da Música Obrigatória!\">\n" +
+            "                        </div>\n" +
+            "                    </div>\n" +
+            "                    <div class=\"form-group\">\n" +
+            "                        <div class=\"input-group\">\n" +
+            "                            <div class=\"input-group-prepend\">\n" +
+            "                                <div class=\"input-group-text\">* Duração:</div>\n" +
+            "                            </div>\n" +
+            "                            <input type=\"time\" class=\"form-control form-control-lg\" name=\"data["+length+"][2]\" id=\"length_song\"\n" +
+            "                                   placeholder=\"...\" data-validation=\"required\" min=\"00:00:00\" step=\"1\"" +
+            "                                   data-validation-error-msg=\"* Duração da Música Obrigatória!\">\n" +
+            "                        </div>\n" +
+            "                    </div>\n" +
+            "                    <div class=\"form-group\">\n" +
+            "                                <textarea class=\"form-control form-control-lg\" name=\"data["+length+"][3]\" id=\"lyrics_song\" rows=\"10\"\n" +
+            "                                          placeholder=\"Letra...\"></textarea>\n" +
+            "                    </div>\n" +
+            "                </div>\n" +
+            "            </div>");
+    });
+</script>

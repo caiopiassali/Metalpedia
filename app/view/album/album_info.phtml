@@ -1,0 +1,87 @@
+<div class="col-sm-10 offset-sm-1 mb-4">
+
+    <div class="row">
+        <div class="col-sm-10">
+            <h4><?=$this->model->getBand()->getNameBand()?> - <?=$this->model->getNameAlbum()?>:</h4>
+        </div>
+        <div class="col-sm-2 text-right">
+            <?php if ($this->activeUser != new \app\model\UserModel() /*&& $this->activeUser->getTypeUser() != "U"*/) { ?>
+                <a href="/Metalpedia/albums/editar/<?=$this->model->getId()?>">
+                    <button type="button" class="btn btn-danger btn-sm">
+                        <i class="fas fa-cog"></i> Editar
+                    </button>
+                </a>
+            <?php } ?>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-sm-4">
+            <div class="card bg-transparent">
+
+                <div class="grid__item">
+                    <a class="grid__link" href="/Metalpedia/albums/<?=$this->model->getId()?>" title="<?=$this->model->getNameAlbum()?>">
+                        <div class="img-wrap img-wrap--grid">
+                            <svg class="lp lp--grid"></svg>
+                            <img class="img img--grid" src="/Metalpedia/core/img/covers/<?=$this->model->getCoverAlbum()?>" alt="album1">
+                        </div>
+                    </a>
+                </div>
+
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent"><strong>Nome:</strong> <?=$this->model->getNameAlbum()?></li>
+                    <li class="list-group-item bg-transparent"><strong>Lançamento:</strong> <?=\core\util\Strings::formatDate($this->model->getReleaseDate())?></li>
+                    <li class="list-group-item bg-transparent"><strong>Tipo:</strong> <?=$this->model->getAlbumType()?></li>
+                    <li class="list-group-item bg-transparent"><strong>Banda:</strong> <a href="/Metalpedia/bandas/<?=$this->model->getBand()->getId()?>"><?=$this->model->getBand()->getNameBand()?></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <h6>Músicas:</h6>
+            <table class="table table-borderless">
+                <thead class="thead-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Nome:</th>
+                    <th>Duração</th>
+                    <th>Letra</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <?php if (sizeof($this->songs) ==  0) { ?>
+                    <tr class="text-center">
+                        <td colspan="4">Nenhuma Música Cadastrada!</td>
+                    </tr>
+                <?php } ?>
+
+                <?php if ($this->songs) foreach ($this->songs as $song) { ?>
+
+                    <tr>
+                        <td><?=$song->getNumberSong()?>.</td>
+                        <td><?=$song->getNameSong()?></td>
+                        <td><?=\core\util\Strings::formatTime($song->getLengthSong())?></td>
+                        <?php if ($song->getLyricsSong() != '') { ?>
+                            <td><a href="javascript:void(0)" onclick="$('[name=\'lyrics<?=$song->getNumberSong()?>\']').toggle();">Ver Letra</a></td>
+                        <?php } ?>
+                    </tr>
+
+                    <?php if ($song->getLyricsSong() != '') { ?>
+                        <tr>
+                            <td colspan="4" name="lyrics<?=$song->getNumberSong()?>" style="display: none;">
+                                <?=$song->getLyricsSong()?>
+                            </td>
+                        </tr>
+                    <?php } ?>
+
+                <?php } ?>
+
+                </tbody>
+            </table>
+            <p class="text-right"><strong>Total</strong>: <?=\core\util\Strings::formatTimeHour($this->total_length)?></p>
+        </div>
+
+    </div>
+
+</div>

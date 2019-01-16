@@ -1,0 +1,250 @@
+<div class="col-sm-10 offset-sm-1">
+
+    <div class="row">
+        <div class="col-sm-6">
+            <h4>Albums:</h4>
+        </div>
+        <?php if ($this->activeUser != 'Visitante') { ?>
+            <div class="col-sm-6 text-right">
+                <a href="/Metalpedia/albums/cadastrar">
+                    <button type="button" class="btn btn-danger btn-sm">
+                        <i class="fas fa-plus"></i> Cadastrar
+                    </button>
+                </a>
+            </div>
+        <?php } ?>
+    </div>
+
+    <form name="searchform" method="post" action="/Metalpedia/albums?page=1">
+
+        <table class="table table-dark table-borderless">
+            <thead>
+            <tr>
+                <th>Reg. Por Página:</th>
+                <th>Banda:</th>
+                <th>De:</th>
+                <th>Até:</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <select class="custom-select" name="limit" id="limit">
+                        <option <?= $this->regPerPage == 10 ? "selected" : '' ?> value="10">10</option>
+                        <option <?= $this->regPerPage == 25 ? "selected" : '' ?> value="25">25</option>
+                        <option <?= $this->regPerPage == 50 ? "selected" : '' ?> value="50">50</option>
+                        <option <?= $this->regPerPage == 100 ? "selected" : '' ?> value="100">100</option>
+                    </select>
+                </td>
+                <td>
+                    <div class="input-group">
+                        <input type="text" class="form-control custom-input" id="rdoname_band"
+                               value="<?= isset($this->sqlData[0]) ? $this->sqlData[0] : '' ?>" placeholder="..."
+                               readonly>
+                        <input type="hidden" id="id_band" name="data[0]" value="<?= isset($this->sqlData[0]) ? $this->sqlData[0] : '' ?>">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-danger" name="search_band" id="search_band" title="Pesquisar"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <input class="form-control custom-input" type="date" name="data[1]" id="data[1]"
+                           value="<?= isset($this->sqlData[1]) ? $this->sqlData[1] : '' ?>">
+                </td>
+                <td>
+                    <input class="form-control custom-input" type="date" name="data[2]" id="data[2]"
+                           value="<?= isset($this->sqlData[2]) ? $this->sqlData[2] : '' ?>">
+                </td>
+            </tr>
+            </tbody>
+            <thead>
+                <tr>
+                    <th>Ordenar Por:</th>
+                    <th>Tipo:</th>
+                    <th>Nome:</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <select class="custom-select" name="orderBy" id="orderBy">
+                        <option value="<?=(new \app\dao\AlbumDao())::COL_ID?> desc">Nenhum</option>
+                        <option value="<?=(new \app\dao\AlbumDao())::COL_ALBUM?> asc"
+                            <?= $this->orderBy == ((new \app\dao\AlbumDao())::COL_ALBUM . " asc") ? "selected" : '' ?>>
+                            Nome &#8638;
+                        </option>
+                        <option value="<?=(new \app\dao\AlbumDao())::COL_ALBUM?> desc"
+                            <?= $this->orderBy == ((new \app\dao\AlbumDao())::COL_ALBUM . " desc") ? "selected" : '' ?>>
+                            Nome &#8643;
+                        </option>
+                        <option value="<?=(new \app\dao\AlbumDao())::COL_DATE?> asc"
+                            <?= $this->orderBy == ((new \app\dao\AlbumDao())::COL_DATE . " asc") ? "selected" : '' ?>>
+                            Lançamento &#8638;
+                        </option>
+                        <option value="<?=(new \app\dao\AlbumDao())::COL_DATE?> desc"
+                            <?= $this->orderBy == ((new \app\dao\AlbumDao())::COL_DATE . " desc") ? "selected" : '' ?>>
+                            Lançamento &#8643;
+                        </option>
+                        <option value="<?=(new \app\dao\AlbumDao())::COL_TYPE?> asc"
+                            <?= $this->orderBy == ((new \app\dao\AlbumDao())::COL_TYPE . " asc") ? "selected" : '' ?>>
+                            Tipo &#8638;
+                        </option>
+                        <option value="<?=(new \app\dao\AlbumDao())::COL_TYPE?> desc"
+                            <?= $this->orderBy == ((new \app\dao\AlbumDao())::COL_TYPE . " desc") ? "selected" : '' ?>>
+                            Tipo &#8643;
+                        </option>
+                    </select>
+                </td>
+                <td>
+                    <select class="custom-select" name="data[3]" id="data[3]">
+                        <option value="">Todos</option>
+                        <?php
+                        if ($this->album_types) {
+                            foreach ($this->album_types as $type) {
+                                ?>
+                                <option value="<?= $type ?>" <?= $type == $this->sqlData[3] ? "selected" : '' ?>>
+                                    <?= $type ?>
+                                </option>
+                                <?php
+                            }
+                        }
+                        ?>
+                    </select>
+                </td>
+                <td colspan="2">
+                    <div class="input-group">
+                        <input type="text" class="form-control custom-input" name="data[4]" id="name" value="<?= isset($this->sqlData[4]) ? $this->sqlData[4] : '' ?>" placeholder="Pesquisar...">
+                        <div class="input-group-append">
+                            <button class="btn btn-danger" type="submit" name="command" title="Pesquisar"><i class="fas fa-filter fa-sm"></i> Filtrar</button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </form>
+
+    <div id="view-list" class="card-group mt-5">
+
+        <?php if (sizeof($this->model) == 0) { ?>
+            <div class="container-fluid mt-3 text-center">
+                <span>Nenhum Registro Encontrado!</span>
+            </div>
+        <?php } ?>
+
+        <?php foreach ($this->model as $album) { ?>
+
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 mb-5">
+
+                <div class="grid__item">
+                    <a class="grid__link" href="/Metalpedia/albums/<?=$album->getId()?>" title="<?=$album->getNameAlbum()?>">
+                        <div class="img-wrap img-wrap--grid">
+                            <svg class="lp lp--grid"></svg>
+                            <img class="img img--grid" src="core/img/covers/<?=$album->getCoverAlbum()?>" alt="album1">
+                        </div>
+                    </a>
+                    <span class="type"><?=$album->getAlbumType()?></span>
+                    <span class="year"><?=\core\util\Strings::getYear($album->getReleaseDate())?></span>
+                    <span class="artist"><a href="/Metalpedia/bandas/<?=$album->getBand()->getId()?>"><?=$album->getBand()->getNameBand()?></a></span>
+                    <span class="title"><?=$album->getNameAlbum()?></span>
+                </div>
+
+            </div>
+
+        <?php } ?>
+    </div>
+
+    <?php
+    if ($this->model)
+        $this->createPagination('AlbumCtr');
+    ?>
+
+</div>
+
+<!-- Band Modal -->
+<div class="modal fade" id="bandModal" tabindex="-1" role="dialog" aria-labelledby="bandModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark">Bandas</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="text-white">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-0 m-0">
+                <div class="form-group mb-0">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="name_band" id="name_band" value="" placeholder="Pesquisar...">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-danger btn-xs" name="btn-search-band" id="btn-search-band" title="Pesquisar">
+                                <i class="fas fa-search fa-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <table id="bands-table" class="table table-striped table-borderless">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Banda</th>
+                        <th>País</th>
+                        <th>Gênero</th>
+                        <th class="text-right">#</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JQuery JS -->
+<script src="/Metalpedia/core/vendor/js/jquery-3.3.1.min.js"></script>
+<script !src="">
+    $("#search_band").on('click', function () {
+        $("#bandModal").modal('toggle');
+        $("#btn-search-band").trigger( "click" );
+    });
+
+    $("#btn-search-band").on('click', function () {
+        $("#bands-table tbody").html("");
+        //if($("#name_country").val() != ''){
+        url = "http://localhost/Metalpedia/Request.php?class=BandCtr&method=getBands&name_band=" + $("#name_band").val();
+        $.getJSON(url, function (data) {
+                $("#bands-table tbody").append("<tr>\n" +
+                    "                        <td class=\"align-middle\">Todas</td>\n" +
+                    "                        <td class=\"align-middle\"></td>\n" +
+                    "                        <td class=\"align-middle\"></td>\n" +
+                    "                        <td class=\"text-right\">\n" +
+                    "                            <button type=\"button\" class=\"btn btn-danger btn-sm btn-select-band\" name=\"\" id=\"\"><i class=\"fas fa-check fa-xs\"></i></button>\n" +
+                    "                        </td>\n" +
+                    "                    </tr>");
+                if(!data.status){
+                    $.each(data, function (key, value) {
+                        $("#bands-table tbody").append("<tr>\n" +
+                            "                        <td class=\"align-middle\">"+value.name_band+"</td>\n" +
+                            "                        <td class=\"align-middle\">"+value.country.name_country+"</td>\n" +
+                            "                        <td class=\"align-middle\">"+value.genre.name_genre+"</td>\n" +
+                            "                        <td class=\"text-right\">\n" +
+                            "                            <button type=\"button\" class=\"btn btn-danger btn-sm btn-select-band\" name=\""+value.name_band+"\" id=\""+value.id_band+"\"><i class=\"fas fa-check fa-xs\"></i></button>\n" +
+                            "                        </td>\n" +
+                            "                    </tr>");
+                    });
+                } else {
+                    $("#bands-table tbody").append("<tr><td colspan=\"4\" class=\"align-middle text-center\">Nenhum Registro Encontrado</tr>");
+                }
+            }
+        );
+        //}
+    });
+
+    $(document).on('click', 'button.btn.btn-danger.btn-sm.btn-select-band', function(){
+        bandId = $(this).attr('id');
+        bandName = $(this).attr('name');
+        $('#id_band').val(bandId);
+        $('#rdoname_band').val(bandName);
+        $("#bandModal").modal('toggle');
+    });
+</script>

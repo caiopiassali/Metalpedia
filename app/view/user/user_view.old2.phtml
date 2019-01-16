@@ -1,0 +1,153 @@
+<h1>Cadastro de Usuários</h1>
+
+<form method="post" action="Request.php?class=UserCtr&method=run">
+            <!-- input para o id (oculto) do objeto  -->
+            <input type="hidden" name="id" id="id" 
+                   value="<?= $this->model->getId() ?>">
+
+            <label for="name">Nome:</label>
+            <input type="text" name="name" id="name" required maxlength="50"
+                   value="<?= $this->model->getName() ?>">
+            <br>
+
+
+            <label for="gender">Sexo:</label>
+            <select name="gender" id="gender">
+                <option value="M" <?= $this->model->getGender() == 'M' ? 'selected' : '' ?>
+                        >Masculino</option>
+                <option value="F" <?= $this->model->getGender() == 'F' ? 'selected' : '' ?> 
+                        >Feminino</option>
+            </select>
+            <br>
+            
+            <label for="email">E-mail:</label>
+            <input type="email" name="email" id="email" required maxlength="50"
+                   value="<?= $this->model->getEmail() ?>">
+                   <img id="loader" src="" style="width:32px;">
+            <br>
+            <fieldset>
+            <legend>Cidade:</legend>
+                <label for="city">Id:</label>
+                <input type="number" name="city" id="city" step="1" value="<?= $this->model->getCity()->getId() ?>">
+                <label for="namecity">Nome:</label>
+                <input type="text" name="namecity" id="namecity" readonly value="<?= $this->model->getCity()->getName() . "/" . $this->model->getCity()->getState() ?>">
+                <button type="button" id="btncity" name="btncity">Pesquisar</button>
+            </fieldset>
+
+            <label>Senha:
+                <input type="password" id="password" required name="password" >                
+            </label>
+            <br>
+            <button type="submit" name="command" value="Novo">
+                Novo
+            </button>
+
+            <button type="submit" name="command" value="Salvar">
+                Salvar
+            </button>
+
+            <button type="submit" name="command" value="Salvar">
+                Excluir
+            </button>
+
+            </form>
+
+
+
+<div id="modalcity" style="display:none;n  width:30%; height:300px; overflow:scroll; position:absolute; left:25%; top:50%; border: thin black solid;">
+    <style type="text/css" scoped>
+        th, td{border: solid thin black}
+    </style>
+    <h3>Pesquisa de Cidades</h3>
+    <input type="text" name="citymodal" id="citymodal">
+    <button id="btncitymodal">Listar</button>
+    <table>
+        <thead>
+            <th>Nome da Cidade</th>
+            <th>OK</th>
+        </thead>
+        <tbody id="tbody">
+        
+        </tbody>
+    </table>
+</div>
+
+
+<!-- adiciona a Jquery -->
+<script src='core/vendor/js/jquery-3.3.1.min.js'></script>
+
+<!-- scripts ajaxa da página -->
+<script>
+    //ao sair do input cujo id é idcity
+    $("#city").blur(function () {
+        if($("#city").val() != ''){ //..se o elemento do form cujo id é idcity não estiver vazio, então...
+        //..cria a url para a requisição - observe a variável fornecida via get
+        url = "http://localhost/SysMoney/Request.php?class=CityCtr&method=getCity&idcity=" + $("#city").val();
+        $.getJSON(url, function (data) { //..usa a função getJSON do jquery
+                if(data != null){
+                    //..se retornou cidade, então seta os valores no form
+                    $("#namecity").val(data['name_city'] + '/' + data['state_city']);                    
+                } else{ //..senão, limpa o idcity, seta o foco nele e exibe um alerta
+                    $("#city").val('');
+                    $("#city").focus();
+                    alert('Cidade não encontrada!');                    
+                }
+            }
+        );
+        }
+    });
+
+
+    //..verificar se o e-mail já está cadastrado no banco de dados. 
+    $("#email").blur(function () {
+        $("#loader").attr('src','');
+        if($("#email").val() != ''){
+            $("#loader").attr('src','core/img/loading.gif');
+            url = "http://localhost/SysMoney/Request.php?class=UserCtr&method=emailExists&email=" + $("#email").val(); 
+            $.getJSON(url,function (data) {
+                if(data == false)    
+                    $("#loader").attr('src','core/img/checked.png');    
+                else{
+                    $("#loader").attr('src','core/img/warning.png');
+                    $("#email").focus();
+                }
+            }
+            );            
+        }
+    });
+
+    //..exibir/ocultar a div de pesquisa
+    $("#btncity").click(function () { 
+        $("#modalcity").toggle();        
+    });
+
+    //..listar as cidades
+    $("#btncitymodal").click(function () { 
+        if($("#citymodal").val() != ''){
+            url = "http://localhost/SysMoney/Request.php?class=CityCtr&method=getCities&name=" + $("#citymodal").val();
+            $.getJSON(url, function (data) {
+                if(data){
+                    $.each(data, function (key, value) { 
+                        city = value.name_city + "/" + value.state_city;
+                        $("#tbody").append("<tr><td>" + city + "</td>" + 
+                        "<td><button name=\"" + city +"\"  class=\"btnselect\" id=\"" + value.id_city + "\">OK</button></td>");                                                                        
+                    });
+                }
+            }
+            ); 
+        }
+    });
+
+    
+    //..adiciona um evento click na classe .btnselect e trata o evento
+    $(document).on('click','.btnselect',function(){
+        cityName = $(this).attr('name');        
+        cityId = $(this).attr('id');
+        $("#city").val(cityId);
+        $("#namecity").val(cityName);
+        $("#modalcity").toggle();
+    });
+    
+
+
+</script>

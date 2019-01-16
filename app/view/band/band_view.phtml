@@ -1,0 +1,297 @@
+<div class="col-sm-6 offset-sm-3">
+
+    <?php if (!is_null($this->model->getId())) { ?>
+        <h4>Editar/Excluir Banda:</h4>
+    <?php } else { ?>
+        <h4>Cadastrar Banda:</h4>
+    <?php } ?>
+
+    <form method="post" action="/Metalpedia/Request.php?class=BandCtr&method=run" enctype="multipart/form-data">
+
+        <input type="hidden" name="id" value="<?= $this->model->getId() ?>">
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">* Banda:</div>
+                </div>
+                <input type="text" class="form-control form-control-lg" name="name_band" id="name_band" value="<?= $this->model->getNameBand() ?>"
+                       placeholder="..." data-validation="required" data-validation-error-msg="* Nome da Banda Obrigatório!">
+            </div>
+        </div>
+
+        <?php if (is_null($this->model->getId())) { ?>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">* Logo:</div>
+                    </div>
+                    <label class="input-file" for="logo_band">Selecionar Imagem</label>
+                    <input type="file" name="logo_band" id="logo_band" accept="image/*"
+                           data-validation="required mime size"
+                           data-validation-allowing="jpg, png, jpeg"
+                           data-validation-max-size="250kb"
+                           data-validation-error-msg-required="* Logo Obrigatório!"
+                           data-validation-error-msg-mime="* Apenas imagens são permitidas!"
+                           data-validation-error-msg-size="* O Logo deve ter no máximo 250kb!"
+                    >
+                </div>
+            </div>
+        <?php } ?>
+
+        <?php if (is_null($this->model->getId())) { ?>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">* Foto:</div>
+                    </div>
+                    <label class="input-file" for="photo_band">Selecionar Imagem</label>
+                    <input type="file" name="photo_band" id="photo_band" accept="image/*"
+                           data-validation="required mime size"
+                           data-validation-allowing="jpg, png, jpeg"
+                           data-validation-max-size="1M"
+                           data-validation-error-msg-required="* Foto Obrigatória!"
+                           data-validation-error-msg-mime="* Apenas imagens são permitidas!"
+                           data-validation-error-msg-size="* A Foto deve ter no máximo 1MB!"
+                    >
+                </div>
+            </div>
+        <?php } ?>
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">* País:</div>
+                </div>
+                <select class="selectpicker" name="id_country" id="id_country"
+                        data-live-search="true" title="..." data-validation="required" data-validation-error-msg="* País Obrigatório!">
+                    <?php
+                    if ($this->countries) {
+                        foreach ($this->countries as $country) {
+                            ?>
+                            <option value="<?= $country->getId() ?>" data-icon="<?= strtolower($country->getIsoCountry()) ?> flag"
+                                <?= $country->getId() == $this->model->getCountry()->getId() ? "selected" : '' ?>>
+                                <?= $country->getNameCountry() ?></span>
+                            </option>
+                            <?php
+                        }
+                    }
+                    ?>
+                </select>
+                <button type="button" class="btn btn-danger btn-sm" name="search_country" id="search_country">
+                    <i class="fas fa-search fa-sm"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">* Gênero:</div>
+                </div>
+                <select class="selectpicker" name="id_genre" id="id_genre"
+                        data-live-search="true" title="..." data-validation="required" data-validation-error-msg="* Gênero Obrigatório!">
+                    <?php
+                    if ($this->genres) {
+                        foreach ($this->genres as $genre) {
+                            ?>
+                            <option value="<?= $genre->getId() ?>"
+                                <?= $genre->getId() == $this->model->getGenre()->getId() ? "selected" : '' ?>>
+                                <?= $genre->getNameGenre() ?></span>
+                            </option>
+                            <?php
+                        }
+                    }
+                    ?>
+                </select>
+                <button type="button" class="btn btn-danger btn-sm" name="search_genre" id="search_genre">
+                    <i class="fas fa-search fa-sm"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">Biografia:</div>
+                </div>
+                <textarea class="form-control form-control-lg" name="bio_band" id="bio_band" rows="10"
+                          placeholder="..."><?= $this->model->getBioBand() ?></textarea>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-6">
+                    <input type="submit" class="btn btn-block btn-outline-danger btn-lg" name="command" value="Salvar">
+                </div>
+                <div class="col-6">
+                    <?php if (!is_null($this->model->getId())) { ?>
+                        <input type="submit" class="btn btn-block btn-outline-danger" name="command" value="Excluir">
+                    <?php } else { ?>
+                        <input type="reset" class="btn btn-block btn-outline-danger" value="Limpar">
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+</div>
+
+<!-- Country Modal -->
+<div class="modal fade" id="countryModal" tabindex="-1" role="dialog" aria-labelledby="countryModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark">Países</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="text-white">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-0 m-0">
+                <div class="form-group mb-0">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="name_country" id="name_country" value="" placeholder="Pesquisar...">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-danger btn-xs" name="btn-search-country" id="btn-search-country" title="Pesquisar">
+                                <i class="fas fa-search fa-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <table id="countries-table" class="table table-striped table-borderless">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Nome</th>
+                        <th>ISO</th>
+                        <th>ISO3</th>
+                        <th class="text-right">#</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!--<tr>
+                        <td class="align-middle">Teste</td>
+                        <td class="align-middle">Teste</td>
+                        <td class="align-middle">Teste</td>
+                        <td class="text-right">
+                            <button type="button" class="btn btn-danger btn-sm" name="select"><i class="fas fa-check fa-xs"></i></button>
+                        </td>
+                    </tr>-->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Genre Modal -->
+<div class="modal fade" id="genreModal" tabindex="-1" role="dialog" aria-labelledby="genreModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark">Gêneros</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="text-white">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-0 m-0">
+                <div class="form-group mb-0">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="name_genre" id="name_genre" value="" placeholder="Pesquisar...">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-danger btn-xs" name="btn-search-genre" id="btn-search-genre" title="Pesquisar">
+                                <i class="fas fa-search fa-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <table id="genres-table" class="table table-striped table-borderless">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Gênero</th>
+                        <th class="text-right">#</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JQuery JS -->
+<script src="/Metalpedia/core/vendor/js/jquery-3.3.1.min.js"></script>
+<script !src="">
+    $("#search_country").on('click', function () {
+        $("#countryModal").modal('toggle');
+        $("#btn-search-country").trigger("click");
+    });
+
+    $("#search_genre").on('click', function () {
+        $("#genreModal").modal('toggle');
+        $("#btn-search-genre").trigger("click");
+    });
+
+    $("#btn-search-country").on('click', function () {
+        $("#countries-table tbody").html("");
+        //if($("#name_country").val() != ''){
+            url = "http://localhost/Metalpedia/Request.php?class=CountryCtr&method=getCountries&name_country=" + $("#name_country").val();
+            $.getJSON(url, function (data) {
+                    if(!data.status){
+                        $.each(data, function (key, value) {
+                            $("#countries-table tbody").append("<tr>\n" +
+                                "                        <td class=\"align-middle\"><span class=\""+value.iso_country.toLowerCase()+" flag\"'></span>"+value.name_country+"</td>\n" +
+                                "                        <td class=\"align-middle\">"+value.iso_country+"</td>\n" +
+                                "                        <td class=\"align-middle\">"+value.iso3_country+"</td>\n" +
+                                "                        <td class=\"text-right\">\n" +
+                                "                            <button type=\"button\" class=\"btn btn-danger btn-sm btn-select-country\" name=\""+value.name_country+"\" id=\""+value.id_country+"\"><i class=\"fas fa-check fa-xs\"></i></button>\n" +
+                                "                        </td>\n" +
+                                "                    </tr>");
+                        });
+                    } else {
+                        $("#countries-table tbody").append("<tr><td colspan=\"4\" class=\"align-middle text-center\">Nenhum Registro Encontrado</tr>");
+                    }
+                }
+            );
+        //}
+    });
+
+    $("#btn-search-genre").on('click', function () {
+        $("#genres-table tbody").html("");
+        //if($("#name_country").val() != ''){
+        url = "http://localhost/Metalpedia/Request.php?class=GenreCtr&method=getGenres&name_genre=" + $("#name_genre").val();
+        $.getJSON(url, function (data) {
+                if(!data.status){
+                    $.each(data, function (key, value) {
+                        $("#genres-table tbody").append("<tr>\n" +
+                            "                        <td class=\"align-middle\">"+value.name_genre+"</td>\n" +
+                            "                        <td class=\"text-right\">\n" +
+                            "                            <button type=\"button\" class=\"btn btn-danger btn-sm btn-select-genre\" name=\""+value.name_genre+"\" id=\""+value.id_genre+"\"><i class=\"fas fa-check fa-xs\"></i></button>\n" +
+                            "                        </td>\n" +
+                            "                    </tr>");
+                    });
+                } else {
+                    $("#genres-table tbody").append("<tr><td colspan=\"4\" class=\"align-middle text-center\">Nenhum Registro Encontrado</tr>");
+                }
+            }
+        );
+        //}
+    });
+
+    $(document).on('click', 'button.btn.btn-danger.btn-sm.btn-select-country', function(){
+        countryId = $(this).attr('id');
+        $('#id_country.selectpicker').val(countryId);
+        $('.selectpicker').selectpicker('refresh');
+        $("#countryModal").modal('toggle');
+    });
+
+    $(document).on('click', 'button.btn.btn-danger.btn-sm.btn-select-genre', function(){
+        genreId = $(this).attr('id');
+        $('#id_genre.selectpicker').val(genreId);
+        $('.selectpicker').selectpicker('refresh');
+        $("#genreModal").modal('toggle');
+    });
+
+</script>

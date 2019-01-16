@@ -1,0 +1,2 @@
+INSERT INTO users (id_user, name_user, gender_user, avatar_user, type_user, status_user, email_user, password_user) VALUES (DEFAULT, 'Admin', 'M', 'https://avatarfiles.alphacoders.com/817/thumb-81709.jpg', 'A', 'A', 'admin@admin.com', '21232f297a57a5a743894a0e4a801fc3');
+INSERT INTO users (id_user, name_user, gender_user, avatar_user, type_user, status_user, email_user, password_user) VALUES (DEFAULT, 'User', 'M', '', 'U', 'A', 'user@user.com', 'ee11cbb19052e40b07aac0ca060c23ee');
