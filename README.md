@@ -5,7 +5,7 @@
 Metalpedia é Sistema de cadastro de bandas e albums de diversos subgêneros do Metal.
 
 
-## Tencologias Usadas
+## Tecnologias Usadas
 
 * PHP
 * JS
